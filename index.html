@@ -73,19 +73,19 @@ background: linear-gradient(90deg, rgb(78, 134, 148) 0%, rgba(48,115,180,1) 47%,
     }
 
     .done-btn:disabled {
-      color: #7f8c8d; /* Grey color for disabled button */
+      color: #7f8c8d; 
     }
 
     .done-btn.enabled {
-      color: #27ae60; /* Green color for enabled button */
+      color: #27ae60; 
     }
 
     .done-task {
-      /* Remove the line-through text decoration */
-      color: #2ecc71; /* Darker green color for completed tasks */
+      
+      color: #2ecc71; 
     }
     @media (max-width: 600px) {
-      /* Adjust styles for smaller screens */
+      
       #todo-container {
         width: 100%;
         max-width: none;
@@ -141,7 +141,7 @@ background: linear-gradient(90deg, rgb(78, 134, 148) 0%, rgba(48,115,180,1) 47%,
         doneButton.textContent = 'Done';
         doneButton.addEventListener('click', function () {
           taskContent.classList.toggle('done-task');
-          doneButton.disabled = true; // Disable the button after marking done
+          doneButton.disabled = true; 
           doneButton.classList.remove('enabled');
           saveTasks();
         });
@@ -154,7 +154,7 @@ background: linear-gradient(90deg, rgb(78, 134, 148) 0%, rgba(48,115,180,1) 47%,
 
         if (completed) {
           taskContent.classList.add('done-task');
-          doneButton.disabled = true; // Disable the button for completed tasks
+          doneButton.disabled = true; 
           doneButton.classList.remove('enabled');
         } else {
           doneButton.classList.add('enabled');
