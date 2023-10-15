@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks</title>
+
+  <style>
+   
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: rgb(236,190,210);
+background: linear-gradient(90deg, rgb(219, 107, 155) 0%, rgba(145,43,86,1) 27%, rgba(49,16,85,1) 100%);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #todo-container {
+      width: 400px;
+      background: rgb(36,55,60);
+background: linear-gradient(90deg, rgb(78, 134, 148) 0%, rgba(48,115,180,1) 47%, rgba(0,215,213,1) 100%);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 7px 20px rgba(0, 0, 0.5, 0.5);
+    }
+
+    h2 {
+      color: #000000;
+    }
+
+    #task-input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      border-radius: 20px;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #bdc3c7;
+      background-color: #fff;
+      animation: fadeIn 0.5s ease-in-out; /* Add fade-in animation */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .delete-btn, .done-btn {
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #e74c3c;
+    }
+
+    .done-btn:disabled {
+      color: #7f8c8d; /* Grey color for disabled button */
+    }
+
+    .done-btn.enabled {
+      color: #27ae60; /* Green color for enabled button */
+    }
+
+    .done-task {
+      /* Remove the line-through text decoration */
+      color: #2ecc71; /* Darker green color for completed tasks */
+    }
+    @media (max-width: 600px) {
+      /* Adjust styles for smaller screens */
+      #todo-container {
+        width: 100%;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="todo-container">
+    <h2>To-Do List</h2>
+    <input type="text" id="task-input" placeholder="Add a new task...">
+    <ul id="task-list"></ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const taskInput = document.getElementById('task-input');
+      const taskList = document.getElementById('task-list');
+      const storageKey = `tasks_${window.location.origin}`;
+
+      // Load tasks from local storage
+      const savedTasks = JSON.parse(localStorage.getItem(storageKey)) || [];
+      savedTasks.forEach(task => addTask(task.text, task.completed));
+
+      taskInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          addTask(taskInput.value);
+          taskInput.value = '';
+        }
+      });
+
+      function addTask(taskText, completed = false) {
+        const taskItem = document.createElement('li');
+        taskItem.className = 'task';
+
+        const taskContent = document.createElement('span');
+        taskContent.textContent = taskText;
+
+        const taskActions = document.createElement('div');
+        taskActions.className = 'task-actions';
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-btn';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', function () {
+          taskItem.remove();
+          saveTasks();
+        });
+
+        const doneButton = document.createElement('button');
+        doneButton.className = 'done-btn';
+        doneButton.textContent = 'Done';
+        doneButton.addEventListener('click', function () {
+          taskContent.classList.toggle('done-task');
+          doneButton.disabled = true; // Disable the button after marking done
+          doneButton.classList.remove('enabled');
+          saveTasks();
+        });
+
+        taskActions.appendChild(deleteButton);
+        taskActions.appendChild(doneButton);
+
+        taskItem.appendChild(taskContent);
+        taskItem.appendChild(taskActions);
+
+        if (completed) {
+          taskContent.classList.add('done-task');
+          doneButton.disabled = true; // Disable the button for completed tasks
+          doneButton.classList.remove('enabled');
+        } else {
+          doneButton.classList.add('enabled');
+        }
+
+        taskList.appendChild(taskItem);
+
+        saveTasks();
+      }
+
+      function saveTasks() {
+        const tasks = Array.from(taskList.children).map(taskItem => {
+          const taskText = taskItem.querySelector('span').textContent;
+          const completed = taskItem.querySelector('span').classList.contains('done-task');
+          return { text: taskText, completed };
+        });
+
+        localStorage.setItem(storageKey, JSON.stringify(tasks));
+      }
+    });
+  </script>
+
+</body>
+</html>
